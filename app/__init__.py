@@ -1,3 +1,4 @@
+import git
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -22,3 +23,13 @@ from app.main.routes import main
 app.register_blueprint(users)
 app.register_blueprint(posts)
 app.register_blueprint(main)
+
+@app.route('/update_server', methods=['POST'])
+def webhook():
+  if request.method == 'POST':
+    repo = git.Repo('path/to/git_repo')
+    origin = repo.remotes.origin
+    origin.pull()
+    return 'Updated PythonAnywhere successfully', 200
+  else:
+    return 'Wrong event type', 400
